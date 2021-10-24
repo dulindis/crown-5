@@ -2,6 +2,7 @@ import firebase from 'firebase/compat/app';
 import 'firebase/compat/firestore';
 import 'firebase/compat/auth';
 
+
 const firebaseConfig = {
     apiKey: "AIzaSyBOdEooC69FJ2URJgLBlAC6G_9T2fLSqnw",
     authDomain: "crwn-5.firebaseapp.com",
@@ -13,6 +14,40 @@ const firebaseConfig = {
 };
 
 firebase.initializeApp(firebaseConfig);
+
+export const createUserProfileDocument = async (userAuth, additionalData) => {
+  //finkcja bierze usera i do ego obect z dodatkowymi inf
+  if (!userAuth) return;
+ // if userah object does  no exis
+  // const userRef = firestore.doc('user/123sdmkdmsdd');
+  //snapshot jus shows the data but the documentref iforfor crud operations, creang etc
+  const userRef = firestore.doc(`users/${userAuth.uid}`);
+
+  const snapShot = await userRef.get();
+
+  if (!snapShot.exists) {
+    const { displayName, email } = userAuth;
+    const createdAt = new Date();
+    try {
+      await userRef.set({
+        displayName,
+        email,
+        createdAt,
+        ...additionalData
+      });
+    } catch (error) {
+      console.log('error creating user', error.message);
+    }
+  }
+
+  return userRef;
+};
+
+
+
+
+
+
 
 export const auth = firebase.auth();
 export const firestore = firebase.firestore();
@@ -34,6 +69,7 @@ export const signInWithFacebook = () => auth.signInWithPopup(facebookProvider).t
     //window.location.assign('./profile')
     // // The signed-in user info.
     const user = result.user;
+    return user
 
     // // This gives you a Facebook Access Token. You can use it to access the Facebook API.
     // const credential = facebookProvider.credentialFromResult(result);
@@ -42,7 +78,8 @@ export const signInWithFacebook = () => auth.signInWithPopup(facebookProvider).t
     // // ...
   })
   .catch((error) => {
-      console.error(error)
+      console.error(error);
+      return error
     // // Handle Errors here.
     // const errorCode = error.code;
     // const errorMessage = error.message;

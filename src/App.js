@@ -35,13 +35,6 @@ class App extends React.Component {
             ...snapShot.data()
         });
 
-          // this.setState({
-          //   currentUser: {
-          //     id: snapShot.id,
-          //     ...snapShot.data()
-          //   }
-          // });
-
           console.log(this.state);
         });
       }
@@ -69,7 +62,7 @@ class App extends React.Component {
 };
 
 const mapDispatchToProps = dispatch =>({
-  //dispatch take an action object to be dispatched to every reducer
+  //dispatch take an action object to be dispatched to every reducer - in this case the connect allow us to o props.dispatch and then disptch the acion which takes an argument,
   setCurrentUser: user => dispatch(setCurrentUser(user))
 })
 

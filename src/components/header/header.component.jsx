@@ -3,14 +3,18 @@ import {connect} from 'react-redux';
 import { Link } from 'react-router-dom';
 import {auth} from '../../firebase/firebase.utils.js';
 
+import { createStructuredSelector } from 'reselect';
+
 import CartIcon from '../cart-icon/cart-icon.component.js';
 import CartDropdown from '../cart-dropdown/cart-dropdown.component';
+import { selectCartHidden } from '../../redux/cart/cart.selectors.js';
 
 import { ReactComponent as Logo } from '../../assets/crown.svg'; //special format to import SVGs
 
 
 import './header.styles.scss';
 import { toggleCartHidden } from '../../redux/cart/cart.actions.js';
+import { selectCurrentUser } from '../../redux/user/user.selectors.js';
 
 const Header = ({currentUser,hidden}) => (
   <div className='header'>
@@ -37,10 +41,10 @@ const Header = ({currentUser,hidden}) => (
   </div>
 );
 
-//naming can be different too- the state object passed into it is a roo reducer
-const mapStateToProps = ({user:{currentUser},cart:{hidden}}) => ({
-  currentUser,
-  hidden
+//naming can be different too- the state object passed into it is a roo reducer/ createstructures will autmatically passs state to the selectors
+const mapStateToProps = createStructuredSelector({
+  currentUser:selectCurrentUser,
+  hidden:selectCartHidden
 });
 
 export default connect(mapStateToProps)(Header);

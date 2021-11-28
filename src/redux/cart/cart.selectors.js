@@ -1,15 +1,33 @@
-import {createSelector} from 'reselect';
-//input selector
+import { createSelector } from 'reselect';
+
 const selectCart = state => state.cart;
-//output selector takes an arrya of input selectors and the funtion as apramterw ill ge tas paramtere each output of the input selecor in prper order - this is memoie seleco
+
 export const selectCartItems = createSelector(
-    [selectCart],
-    (cart)=>cart.cartItems
+  [selectCart],
+  cart => cart.cartItems
+);
+
+export const selectCartHidden = createSelector(
+  [selectCart],
+  cart => cart.hidden
 );
 
 export const selectCartItemsCount = createSelector(
-    [selectCartItems],
-    cartItems =>  cartItems.reduce((accumulatedQuantity , cartItem)=>( accumulatedQuantity + cartItem.quantity),0)
+  [selectCartItems],
+  cartItems =>
+    cartItems.reduce(
+      (accumalatedQuantity, cartItem) =>
+        accumalatedQuantity + cartItem.quantity,
+      0
+    )
+);
 
-)
-//our output is rhe reduce call on this 
+export const selectCartTotal = createSelector(
+  [selectCartItems],
+  cartItems =>
+    cartItems.reduce(
+      (accumalatedQuantity, cartItem) =>
+        accumalatedQuantity + cartItem.quantity * cartItem.price,
+      0
+    )
+);

@@ -43,6 +43,37 @@ export const createUserProfileDocument = async (userAuth, additionalData) => {
   return userRef;
 };
 
+export const addCollectionAndDocuments = async (collectionKey, objectsToAdd) => {
+  const collectionRef=firestore.collection(collectionKey);
+  console.log(collectionRef);
+
+  const batch = firestore.batch();
+  objectsToAdd.forEach(obj=>{
+    const newDocRef=collectionRef.doc();
+    //instead of nedocref.set we will ball batch.set
+    batch.set(newDocRef, obj)
+  })
+ return await  batch.commit() 
+
+}
+
+
+export const convertCollectionsSnapshotToMap = (collections) => {
+  const transformedCollection = collections.docs.map(doc=>{
+    const {title,items}=doc.data();
+    return {
+      routeName: encodeURI(title.toLowerCase()),
+      id: doc.id,
+      title,
+      items
+    }
+  });
+  return transformedCollection.reduce((accumulator,collection)=>{
+    accumulator[collection.title.toLowerCase()]=collection;
+    return accumulator
+  },{})
+}
+
 
 
 export const auth = firebase.auth();
@@ -60,7 +91,7 @@ googleProvider.setCustomParameters({
     prompt: 'select_account'
 });
 
-export const signInWithGoolge = () => auth.signInWithPopup(googleProvider);
+export const signInWithGoogle = () => auth.signInWithPopup(googleProvider);
 export const signInWithFacebook = () => auth.signInWithPopup(facebookProvider).then((result) => {
     //window.location.assign('./profile')
     // // The signed-in user info.

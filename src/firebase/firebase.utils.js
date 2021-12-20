@@ -45,7 +45,6 @@ export const createUserProfileDocument = async (userAuth, additionalData) => {
 
 export const addCollectionAndDocuments = async (collectionKey, objectsToAdd) => {
   const collectionRef=firestore.collection(collectionKey);
-  console.log(collectionRef);
 
   const batch = firestore.batch();
   objectsToAdd.forEach(obj=>{
@@ -73,25 +72,32 @@ export const convertCollectionsSnapshotToMap = (collections) => {
     return accumulator
   },{})
 }
+//we want o ceate a promise orinted solutio that sagac dould yield - onwe we get the obect we want to immdiately uubscrib
+export const getCurrentUser = () => {
+  return new Promise((resolve,reject)=>{
+    const unsubscribe = auth.onAuthStateChanged(userAuth=>{
+      unsubscribe();
+      resolve(userAuth);
+    },reject)
+  })
+}
 
-
-
+//google
 export const auth = firebase.auth();
 export const firestore = firebase.firestore();
 
-const googleProvider = new firebase.auth.GoogleAuthProvider();
-const facebookProvider = new firebase.auth.FacebookAuthProvider();
-
-// const fcbAuth = auth.getAuth();
-facebookProvider.setCustomParameters({
-    'display': 'popup'
-  });
-
+export const googleProvider = new firebase.auth.GoogleAuthProvider();
 googleProvider.setCustomParameters({
     prompt: 'select_account'
 });
-
 export const signInWithGoogle = () => auth.signInWithPopup(googleProvider);
+
+//cb
+const facebookProvider = new firebase.auth.FacebookAuthProvider();
+// const fcbAuth = auth.getAuth();
+facebookProvider.setCustomParameters({
+  'display': 'popup'
+});
 export const signInWithFacebook = () => auth.signInWithPopup(facebookProvider).then((result) => {
     //window.location.assign('./profile')
     // // The signed-in user info.

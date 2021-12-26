@@ -49,7 +49,6 @@ export function* signInWithEmail({ payload: { email, password } }) {
     yield put(signInFailure(error));
   }
 }
-
 export function* isUserAuthenticated() {
   try {
     const userAuth = yield getCurrentUser();
@@ -59,7 +58,6 @@ export function* isUserAuthenticated() {
     yield put(signInFailure(error));
   }
 }
-
 export function* signOut() {
   try {
     yield auth.signOut();
